@@ -23,6 +23,5 @@ hs_err_pid*
 .gradle
 gradlew
 
-
 # Ignore Gradle build output directory
 build
