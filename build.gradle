@@ -48,6 +48,6 @@ application {
     mainClassName = 'lox.Lox'
 }
 
-task myJavadocs(type: Javadoc) {
+task compileJavadocs(type: Javadoc) {
     source = sourceSets.main.allJava
 }
