@@ -8,6 +8,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Lox {
+    private static boolean encounteredError = false;
+
+    // Inspired by sysexits.h
+    private static final int EX_USAGE = 64;
+    private static final int EX_DATAERR = 65;
+
     /**
      * Main loop for our interpreter. Supports scripts and a REPL.
      * @param args Commandline arguments
@@ -16,13 +22,12 @@ public class Lox {
     public static void main(String[] args) throws IOException {
         if (args.length > 1){
             System.out.println("Usage: jlox [script_to_execute]");
-            System.exit(64);
+            System.exit(EX_USAGE);
         }
         else if (args.length == 1) { // run a script
             runFile(args[0]);
         }
         else { // run in interactive mode
-
             runPrompt();
         }
     }
@@ -35,6 +40,10 @@ public class Lox {
     private static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
+
+        if (encounteredError) {
+            System.exit(EX_DATAERR);
+        }
     }
 
     /**
@@ -51,6 +60,7 @@ public class Lox {
             String line = reader.readLine();
             if (line != null) {
                 run(line);
+                encounteredError = false; // toggle off errors since we don't want to kill the REPL
             }
             else {
                 done = true;
@@ -66,4 +76,23 @@ public class Lox {
 
     }
 
+    /**
+     * Report an error on a particular line of execution.
+     * @param line The line number
+     * @param message Error message
+     */
+    public static void error(int line, String message) {
+        reportError(line, "", message);
+        encounteredError = true;
+    }
+
+    /**
+     * Reports an error event on a line.
+     * @param line The line number
+     * @param where File location of error
+     * @param message Error message
+     */
+    private static void reportError(int line, String where, String message) {
+        System.err.println("[line " + line + "] Error " + where + ": " + message);
+    }
 }
