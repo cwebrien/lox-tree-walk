@@ -44,6 +44,10 @@ public class Scanner {
             case '+': tokenType = TokenType.PLUS; break;
             case ';': tokenType = TokenType.SEMICOLON; break;
             case '*': tokenType = TokenType.STAR; break;
+            case '!': tokenType = (match('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break;
+            case '=': tokenType = (match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break;
+            case '<': tokenType = (match('=') ? TokenType.LESS_EQUAL : TokenType.LESS); break;
+            case '>': tokenType = (match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER); break;
         }
 
         if(tokenType == null) {
@@ -54,6 +58,19 @@ public class Scanner {
             String text = source.substring(start, current);
             return new Token(tokenType, text, null, line);
         }
+    }
+
+    /**
+     * Consume the next character only if it matches expected. Like a conditional advance().
+     * @param expected The character that we're looking for
+     * @return If we found expected in the next character
+     */
+    private boolean match(char expected) {
+        if (isAtEnd()) return false;
+        if (source.charAt(current) != expected) return false;
+
+        current++;
+        return true;
     }
 
     private char getNextChar() {
