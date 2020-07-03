@@ -31,12 +31,13 @@ public class TestScanner {
         String ridiculousSource = "(){},.-+;/*";
         Scanner scanner = new Scanner(ridiculousSource);
         List<Token> scannedTokens = scanner.scanTokens();
+
+        // TODO: check all contents of the token, not just the token type
+        // TODO: in interim, replace with lambda
         List<TokenType> scannedTokenTypes = new ArrayList<TokenType>();
         for(Token t : scannedTokens) {
             scannedTokenTypes.add(t.getType());
         }
-
-        // TODO: check all contents of the token, not just the token type
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
 
