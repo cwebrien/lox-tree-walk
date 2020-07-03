@@ -22,6 +22,14 @@ public class Token {
     }
 
     /**
+     * Provides the type of token.
+     * @return The type of token
+     */
+    public TokenType getType() {
+        return this.type;
+    }
+
+    /**
      * Stringification of the token.
      * @return A string representation.
      */

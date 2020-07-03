@@ -10,6 +10,7 @@ public enum TokenType {
     EQUAL, EQUAL_EQUAL,
     GREATER, GREATER_EQUAL,
     LESS, LESS_EQUAL,
+    COMMENT,
 
     // Literals.
     IDENTIFIER, STRING, NUMBER,
@@ -18,5 +19,14 @@ public enum TokenType {
     AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
     PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
 
-    EOF
+    EOF;
+
+    /**
+     * Tokens are useful if they are non-null and aren't comments
+     * @param t The TokenType to test
+     * @return Is this token type useful for compilation
+     */
+    public static boolean isUseful(TokenType t) {
+        return t != null && t != COMMENT;
+    }
 }
