@@ -4,6 +4,7 @@ package com.lox;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TestScanner {
@@ -27,11 +28,16 @@ public class TestScanner {
                 TokenType.STAR,
                 TokenType.EOF // there's always an implicit EOF
         );
-        String ridiculousSource = "(){},.-+;*";
+        String ridiculousSource = "(){},.-+;/*";
         Scanner scanner = new Scanner(ridiculousSource);
         List<Token> scannedTokens = scanner.scanTokens();
+        List<TokenType> scannedTokenTypes = new ArrayList<TokenType>();
+        for(Token t : scannedTokens) {
+            scannedTokenTypes.add(t.getType());
+        }
 
-        Assert.assertEquals(expectedTokens, scannedTokens);
+        // TODO: check all contents of the token, not just the token type
+        Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
 
 /*
