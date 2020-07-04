@@ -7,8 +7,8 @@ public class Scanner {
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
 
-    private int start = 0;
-    private int current = 0;
+    private int startChar = 0;
+    private int currentChar = 0;
     private int line = 1;
 
     /**
@@ -25,14 +25,18 @@ public class Scanner {
      */
     public List<Token> scanTokens() {
         while (!isAtEnd()) {
+            // Update the starting character for the next token
+            startChar = currentChar;
+
+            // Process the token and add it
             Token t = getNextToken();
-            if(TokenType.isUseful(t)) {
+            if(t != null) {
                 tokens.add(t);
             }
         }
 
         // Wrap with an end-of-file token for good form
-        tokens.add(new Token(TokenType.EOF, "", null, line));
+        tokens.add(buildToken(TokenType.EOF));
         return tokens;
     }
 
@@ -42,34 +46,37 @@ public class Scanner {
      */
     private Token getNextToken() {
         char c = pullNextChar();
-        TokenType tokenType = null;
+        Token token = null;
+
+        // Handle everything but string and numeric literals
         switch(c) {
             // Single-character tokens
-            case '(': tokenType = TokenType.LEFT_PAREN; break;
-            case ')': tokenType = TokenType.RIGHT_PAREN; break;
-            case '{': tokenType = TokenType.LEFT_BRACE; break;
-            case '}': tokenType = TokenType.RIGHT_BRACE; break;
-            case ',': tokenType = TokenType.COMMA; break;
-            case '.': tokenType = TokenType.DOT; break;
-            case '-': tokenType = TokenType.MINUS; break;
-            case '+': tokenType = TokenType.PLUS; break;
-            case ';': tokenType = TokenType.SEMICOLON; break;
-            case '*': tokenType = TokenType.STAR; break;
+            case '(': token = buildToken(TokenType.LEFT_PAREN); break;
+            case ')': token = buildToken(TokenType.RIGHT_PAREN); break;
+            case '{': token = buildToken(TokenType.LEFT_BRACE); break;
+            case '}': token = buildToken(TokenType.RIGHT_BRACE); break;
+            case ',': token = buildToken(TokenType.COMMA); break;
+            case '.': token = buildToken(TokenType.DOT); break;
+            case '-': token = buildToken(TokenType.MINUS); break;
+            case '+': token = buildToken(TokenType.PLUS); break;
+            case ';': token = buildToken(TokenType.SEMICOLON); break;
+            case '*': token = buildToken(TokenType.STAR); break;
 
             // Double-character tokens (potentially)
-            case '!': tokenType = (matchNextChar('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break;
-            case '=': tokenType = (matchNextChar('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break;
-            case '<': tokenType = (matchNextChar('=') ? TokenType.LESS_EQUAL : TokenType.LESS); break;
-            case '>': tokenType = (matchNextChar('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER); break;
+            case '!': token = buildToken(matchNextChar('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break;
+            case '=': token = buildToken(matchNextChar('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break;
+            case '<': token = buildToken(matchNextChar('=') ? TokenType.LESS_EQUAL : TokenType.LESS); break;
+            case '>': token = buildToken(matchNextChar('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER); break;
 
             // Possibly a comment
             case '/':
                 if(matchNextChar('/')) {
                     // A comment goes until the end of the line, so shamelessly rip characters
-                    while (peekNextChar() != '\n' && !isAtEnd()) pullNextChar();
-                    tokenType = TokenType.COMMENT;
+                    while (peekNextChar() != '\n' && !isAtEnd()) {
+                        pullNextChar();
+                    }
                 } else {
-                    tokenType = TokenType.SLASH;
+                    token = buildToken(TokenType.SLASH);
                 }
                 break;
 
@@ -84,17 +91,26 @@ public class Scanner {
             case '\n':
                 line++;
                 break;
+
+            // String literals
+            case '"':
+                String literal = processString();
+                token = buildToken(TokenType.STRING, literal);
+                
+            default:
+                Lox.error(line, "Unexpected character.");
         }
 
-        // Handle different classes of token type
-        if(tokenType == null) {
-            Lox.error(line, "Unexpected character.");
-            return null;
-        }
-        else {
-            String text = source.substring(start, current);
-            return new Token(tokenType, text, null, line);
-        }
+        return token;
+    }
+
+    private Token buildToken(TokenType type, Object literal) {
+        String lexeme = source.substring(startChar, currentChar);
+        return new Token(type, lexeme, literal, line);
+    }
+
+    private Token buildToken(TokenType type) {
+        return buildToken(type, null);
     }
 
     /**
@@ -103,14 +119,11 @@ public class Scanner {
      * @return If we found expected in the next character
      */
     private boolean matchNextChar(char expected) {
-        if (isAtEnd()) {
-            return false;
-        }
-        if (source.charAt(current) != expected) {
+        if (isAtEnd() || source.charAt(currentChar) != expected) {
             return false;
         }
 
-        current++;
+        currentChar++;
         return true;
     }
 
@@ -122,7 +135,7 @@ public class Scanner {
         if (isAtEnd()) {
             return '\0';
         }
-        return source.charAt(current);
+        return source.charAt(currentChar);
     }
 
     /**
@@ -130,14 +143,38 @@ public class Scanner {
      * @return The next character (with side effects)
      */
     private char pullNextChar() {
-        return source.charAt(current++);
+        return source.charAt(currentChar++);
     }
 
     /**
      * We've completed reading the source code buffer.
-     * @return
+     * @return True if we've consumed all of the source code
      */
     private boolean isAtEnd() {
-        return current >= source.length();
+        return currentChar >= source.length();
+    }
+
+    /**
+     * Process a string literal.
+     */
+    private String processString() {
+        String literal = null;
+
+        // Keep pulling until we hit the terminating quote
+        while(!isAtEnd() && peekNextChar() != '"') {
+            pullNextChar();
+        }
+
+        // Did we hit a terminating quote or the end of the source buffer?
+        if(isAtEnd()) {
+            Lox.error(line, "Unterminated string literal");
+        }
+        else {
+            // There's the terminating quote to pull
+            pullNextChar();
+
+            literal = source.substring(startChar + 1, currentChar - 1);
+        }
+        return literal;
     }
 }
