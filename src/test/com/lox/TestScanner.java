@@ -41,15 +41,69 @@ public class TestScanner {
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
 
-/*
-    LEFT_PAREN,RIGHT_PAREN,LEFT_BRACE,RIGHT_BRACE,
-    COMMA,DOT,MINUS,PLUS,SEMICOLON,SLASH,STAR,
+    @Test
+    public void testScanTokensOneOrTwoChar() {
+        // Try every strictly one/two-character token type
+        List<TokenType> expectedTokens = List.of(
+                TokenType.BANG,
+                TokenType.LEFT_PAREN,
+                TokenType.BANG_EQUAL,
+                TokenType.LEFT_PAREN,
+                TokenType.EQUAL,
+                TokenType.LEFT_PAREN,
+                TokenType.EQUAL_EQUAL,
+                TokenType.LEFT_PAREN,
+                TokenType.GREATER,
+                TokenType.LEFT_PAREN,
+                TokenType.GREATER_EQUAL,
+                TokenType.LEFT_PAREN,
+                TokenType.LESS,
+                TokenType.LEFT_PAREN,
+                TokenType.LESS_EQUAL,
+                TokenType.EOF // there's always an implicit EOF
+        );
 
-    // One or two character tokens.
-    BANG,BANG_EQUAL,
-    EQUAL,EQUAL_EQUAL,
-    GREATER,GREATER_EQUAL,
-    LESS,LESS_EQUAL,
+        // Use '(' to delimit tokens
+        String ridiculousSource = "!(!=(=(==(>(>=(<(<=";
+        Scanner scanner = new Scanner(ridiculousSource);
+        List<Token> scannedTokens = scanner.scanTokens();
+
+        // TODO: check all contents of the token, not just the token type
+        // TODO: in interim, replace with lambda
+        List<TokenType> scannedTokenTypes = new ArrayList<TokenType>();
+        for(Token t : scannedTokens) {
+            scannedTokenTypes.add(t.getType());
+        }
+        Assert.assertEquals(expectedTokens, scannedTokenTypes);
+    }
+
+    @Test
+    public void testScanTokensComments() {
+        List<TokenType> expectedTokens = List.of(
+                TokenType.LEFT_PAREN,
+                TokenType.SLASH,
+                TokenType.RIGHT_PAREN,
+                TokenType.LEFT_PAREN,
+                TokenType.RIGHT_PAREN,
+                TokenType.EOF // there's always an implicit EOF
+        );
+        String ridiculousSource = "(/\n)//lots of stuff after comment\n()";
+        Scanner scanner = new Scanner(ridiculousSource);
+        List<Token> scannedTokens = scanner.scanTokens();
+
+        // TODO: check all contents of the token, not just the token type
+        // TODO: in interim, replace with lambda
+        List<TokenType> scannedTokenTypes = new ArrayList<TokenType>();
+        for(Token t : scannedTokens) {
+            scannedTokenTypes.add(t.getType());
+        }
+        Assert.assertEquals(expectedTokens, scannedTokenTypes);
+    }
+
+
+/*
+
+
     COMMENT,
 
     // Literals.
