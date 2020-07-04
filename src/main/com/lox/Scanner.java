@@ -94,11 +94,16 @@ public class Scanner {
 
             // String literals
             case '"':
-                String literal = processString();
-                token = buildToken(TokenType.STRING, literal);
+                token = buildToken(TokenType.STRING, processString());
 
+            // Handle numerics and errors
             default:
-                Lox.error(line, "Unexpected character.");
+                if(Character.isDigit(c)) {
+                    token = buildToken(TokenType.NUMBER, processNumeric());
+                }
+                else {
+                    Lox.error(line, "Unexpected character.");
+                }
         }
 
         return token;
@@ -139,14 +144,25 @@ public class Scanner {
     }
 
     /**
-     * Looks forward one character.
-     * @return The next character or the null-terminating character if we're done reading.
+     * Look forward one character without pulling it.
+     * @return
      */
     private char peekNextChar() {
-        if (isAtEnd()) {
+        return peekNextChar(1);
+    }
+
+    /**
+     * Looks forward n characters without pulling characters.
+     * @return The nth next character or the null-terminating character if the read attempt is outside of the source bounds.
+     */
+    private char peekNextChar(int n) {
+        if (n <= 0) {
             return '\0';
         }
-        return source.charAt(currentChar);
+        if (currentChar + n >= source.length() - 1) {
+            return '\0';
+        }
+        return source.charAt(currentChar + n);
     }
 
     /**
@@ -187,5 +203,24 @@ public class Scanner {
             literal = source.substring(startChar + 1, currentChar - 1);
         }
         return literal;
+    }
+
+    private Double processNumeric() {
+        // Keep pulling digits until you can't
+        while(Character.isDigit(peekNextChar())) {
+            pullNextChar();
+        }
+
+        // Is the next character a decimal point followed by a digit?
+        if('.' == peekNextChar() && Character.isDigit(peekNextChar(2))) {
+            // Rip off the decimal
+            pullNextChar();
+            // Now pull the rest of the digits until you can't
+            while(Character.isDigit(peekNextChar())) {
+                pullNextChar();
+            }
+        }
+
+        return Double.parseDouble(source.substring(startChar, currentChar));
     }
 }
