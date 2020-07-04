@@ -15,10 +15,10 @@ public class TestTokenType {
         TokenType[] allTypes = TokenType.class.getEnumConstants();
         for(TokenType t : allTypes) {
             if(t == TokenType.COMMENT) {
-                assertFalse(TokenType.isUseful(t));
+                assertFalse(TokenType.isUseful(new Token(t, "", null, -1)));
             }
             else {
-                assertTrue(TokenType.isUseful(t));
+                assertTrue(TokenType.isUseful(new Token(t, "", null, -1)));
             }
         }
 

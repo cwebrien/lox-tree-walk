@@ -23,10 +23,10 @@ public enum TokenType {
 
     /**
      * Tokens are useful if they are non-null and aren't comments
-     * @param t The TokenType to test
+     * @param t The Token to test
      * @return Is this token type useful for compilation
      */
-    public static boolean isUseful(TokenType t) {
-        return t != null && t != COMMENT;
+    public static boolean isUseful(Token t) {
+        return t != null && t.getType() != COMMENT;
     }
 }

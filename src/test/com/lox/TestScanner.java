@@ -43,7 +43,7 @@ public class TestScanner {
 
     @Test
     public void testScanTokensOneOrTwoChar() {
-        // Try every strictly single-character token type
+        // Try every strictly one/two-character token type
         List<TokenType> expectedTokens = List.of(
                 TokenType.BANG,
                 TokenType.LEFT_PAREN,
@@ -79,17 +79,31 @@ public class TestScanner {
 
     @Test
     public void testScanTokensComments() {
+        List<TokenType> expectedTokens = List.of(
+                TokenType.LEFT_PAREN,
+                TokenType.SLASH,
+                TokenType.RIGHT_PAREN,
+                TokenType.LEFT_PAREN,
+                TokenType.RIGHT_PAREN,
+                TokenType.EOF // there's always an implicit EOF
+        );
+        String ridiculousSource = "(/\n)//lots of stuff after comment\n()";
+        Scanner scanner = new Scanner(ridiculousSource);
+        List<Token> scannedTokens = scanner.scanTokens();
 
+        // TODO: check all contents of the token, not just the token type
+        // TODO: in interim, replace with lambda
+        List<TokenType> scannedTokenTypes = new ArrayList<TokenType>();
+        for(Token t : scannedTokens) {
+            scannedTokenTypes.add(t.getType());
+        }
+        Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
 
 
 /*
 
-    // One or two character tokens.
-    BANG,BANG_EQUAL,
-    EQUAL,EQUAL_EQUAL,
-    GREATER,GREATER_EQUAL,
-    LESS,LESS_EQUAL,
+
     COMMENT,
 
     // Literals.

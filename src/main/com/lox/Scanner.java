@@ -26,7 +26,7 @@ public class Scanner {
     public List<Token> scanTokens() {
         while (!isAtEnd()) {
             Token t = getNextToken();
-            if(TokenType.isUseful(t.getType())) {
+            if(TokenType.isUseful(t)) {
                 tokens.add(t);
             }
         }
@@ -71,6 +71,18 @@ public class Scanner {
                 } else {
                     tokenType = TokenType.SLASH;
                 }
+                break;
+
+            // Whitespace
+            case ' ':
+            case '\r':
+            case '\t':
+                // Ignore whitespace.
+                break;
+
+            // Newline
+            case '\n':
+                line++;
                 break;
         }
 
