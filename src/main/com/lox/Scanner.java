@@ -96,7 +96,7 @@ public class Scanner {
             case '"':
                 String literal = processString();
                 token = buildToken(TokenType.STRING, literal);
-                
+
             default:
                 Lox.error(line, "Unexpected character.");
         }
@@ -104,11 +104,22 @@ public class Scanner {
         return token;
     }
 
+    /**
+     * Builds up a token that contains a literal (which happen to be string or numeric).
+     * @param type The token type
+     * @param literal The literal associated with the token
+     * @return An inflated token
+     */
     private Token buildToken(TokenType type, Object literal) {
         String lexeme = source.substring(startChar, currentChar);
         return new Token(type, lexeme, literal, line);
     }
 
+    /**
+     * Builds up a token of a given type.
+     * @param type The token type
+     * @return An inflated token
+     */
     private Token buildToken(TokenType type) {
         return buildToken(type, null);
     }
