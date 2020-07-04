@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TestScanner {
     /**
-     *
+     * Tests scanTokens() for one-character tokens.
      */
     @Test
     public void testScanTokensSingleChar() {
@@ -41,6 +41,9 @@ public class TestScanner {
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
 
+    /**
+     * Tests scanTokens() for one-/two-character tokens.
+     */
     @Test
     public void testScanTokensOneOrTwoChar() {
         // Try every strictly one/two-character token type
@@ -77,6 +80,9 @@ public class TestScanner {
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
 
+    /**
+     * Tests scanTokens() for comments implementation and whitespace delimiting.
+     */
     @Test
     public void testScanTokensComments() {
         List<TokenType> expectedTokens = List.of(
@@ -99,13 +105,9 @@ public class TestScanner {
         }
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
-
+}
 
 /*
-
-
-    COMMENT,
-
     // Literals.
     IDENTIFIER,STRING,NUMBER,
 
@@ -113,7 +115,4 @@ public class TestScanner {
     AND,CLASS,ELSE,FALSE,FUN,FOR,IF,NIL,OR,
     PRINT,RETURN,SUPER,THIS,TRUE,VAR,WHILE,
 
-    EOF;
-
-    assertTrue("app should have a greeting",true);*/
-}
+*/
