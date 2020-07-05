@@ -51,22 +51,50 @@ public class Scanner {
         // Handle everything but string and numeric literals
         switch(c) {
             // Single-character tokens
-            case '(': token = buildToken(TokenType.LEFT_PAREN); break;
-            case ')': token = buildToken(TokenType.RIGHT_PAREN); break;
-            case '{': token = buildToken(TokenType.LEFT_BRACE); break;
-            case '}': token = buildToken(TokenType.RIGHT_BRACE); break;
-            case ',': token = buildToken(TokenType.COMMA); break;
-            case '.': token = buildToken(TokenType.DOT); break;
-            case '-': token = buildToken(TokenType.MINUS); break;
-            case '+': token = buildToken(TokenType.PLUS); break;
-            case ';': token = buildToken(TokenType.SEMICOLON); break;
-            case '*': token = buildToken(TokenType.STAR); break;
+            case '(':
+                token = buildToken(TokenType.LEFT_PAREN);
+                break;
+            case ')':
+                token = buildToken(TokenType.RIGHT_PAREN);
+                break;
+            case '{':
+                token = buildToken(TokenType.LEFT_BRACE);
+                break;
+            case '}':
+                token = buildToken(TokenType.RIGHT_BRACE);
+                break;
+            case ',':
+                token = buildToken(TokenType.COMMA);
+                break;
+            case '.':
+                token = buildToken(TokenType.DOT);
+                break;
+            case '-':
+                token = buildToken(TokenType.MINUS);
+                break;
+            case '+':
+                token = buildToken(TokenType.PLUS);
+                break;
+            case ';':
+                token = buildToken(TokenType.SEMICOLON);
+                break;
+            case '*':
+                token = buildToken(TokenType.STAR);
+                break;
 
             // Double-character tokens (potentially)
-            case '!': token = buildToken(matchNextChar('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break;
-            case '=': token = buildToken(matchNextChar('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break;
-            case '<': token = buildToken(matchNextChar('=') ? TokenType.LESS_EQUAL : TokenType.LESS); break;
-            case '>': token = buildToken(matchNextChar('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER); break;
+            case '!':
+                token = buildToken(matchNextChar('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
+                break;
+            case '=':
+                token = buildToken(matchNextChar('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
+                break;
+            case '<':
+                token = buildToken(matchNextChar('=') ? TokenType.LESS_EQUAL : TokenType.LESS);
+                break;
+            case '>':
+                token = buildToken(matchNextChar('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
+                break;
 
             // Possibly a comment
             case '/':
@@ -94,12 +122,17 @@ public class Scanner {
 
             // String literals
             case '"':
-                token = buildToken(TokenType.STRING, processString());
+                token = buildToken(TokenType.STRING, processStringLiteral());
+                break;
 
             // Handle numerics and errors
             default:
                 if(Character.isDigit(c)) {
-                    token = buildToken(TokenType.NUMBER, processNumeric());
+                    token = buildToken(TokenType.NUMBER, processNumericLiteral());
+                }
+                else if(Character.isAlphabetic(c)) {
+                    processIdentifier();
+                    token = buildToken(TokenType.IDENTIFIER);
                 }
                 else {
                     Lox.error(line, "Unexpected character.");
@@ -162,7 +195,7 @@ public class Scanner {
         if (currentChar + n >= source.length() - 1) {
             return '\0';
         }
-        return source.charAt(currentChar + n);
+        return source.charAt(currentChar + n - 1);
     }
 
     /**
@@ -184,7 +217,7 @@ public class Scanner {
     /**
      * Process a string literal.
      */
-    private String processString() {
+    private String processStringLiteral() {
         String literal = null;
 
         // Keep pulling until we hit the terminating quote
@@ -205,7 +238,7 @@ public class Scanner {
         return literal;
     }
 
-    private Double processNumeric() {
+    private Double processNumericLiteral() {
         // Keep pulling digits until you can't
         while(Character.isDigit(peekNextChar())) {
             pullNextChar();
@@ -222,5 +255,11 @@ public class Scanner {
         }
 
         return Double.parseDouble(source.substring(startChar, currentChar));
+    }
+
+    private void processIdentifier() {
+        while(Character.isLetterOrDigit(peekNextChar())) {
+            pullNextChar();
+        }
     }
 }
