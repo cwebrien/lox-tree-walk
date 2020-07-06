@@ -158,7 +158,7 @@ public class Scanner {
      * @param type The token type
      * @return An inflated token
      */
-    private Token buildToken(TokenType type) {
+    Token buildToken(TokenType type) {
         return buildToken(type, null);
     }
 
@@ -167,7 +167,7 @@ public class Scanner {
      * @param expected The character that we're looking for
      * @return If we found expected in the next character
      */
-    private boolean matchNextChar(char expected) {
+    boolean matchNextChar(char expected) {
         if (isAtEnd() || source.charAt(currentChar) != expected) {
             return false;
         }
@@ -180,7 +180,7 @@ public class Scanner {
      * Look forward one character without pulling it.
      * @return
      */
-    private char peekNextChar() {
+    char peekNextChar() {
         return peekNextChar(1);
     }
 
@@ -188,7 +188,7 @@ public class Scanner {
      * Looks forward n characters without pulling characters.
      * @return The nth next character or the null-terminating character if the read attempt is outside of the source bounds.
      */
-    private char peekNextChar(int n) {
+    char peekNextChar(int n) {
         if (n <= 0) {
             return '\0';
         }
@@ -202,7 +202,7 @@ public class Scanner {
      * Pulls the next character and moves us forward in the buffer.
      * @return The next character (with side effects)
      */
-    private char pullNextChar() {
+    char pullNextChar() {
         return source.charAt(currentChar++);
     }
 
@@ -210,14 +210,16 @@ public class Scanner {
      * We've completed reading the source code buffer.
      * @return True if we've consumed all of the source code
      */
-    private boolean isAtEnd() {
+    boolean isAtEnd() {
         return currentChar >= source.length();
     }
 
     /**
      * Process a string literal.
+     *
+     * @return The parsed string
      */
-    private String processStringLiteral() {
+    String processStringLiteral() {
         String literal = null;
 
         // Keep pulling until we hit the terminating quote
@@ -238,7 +240,11 @@ public class Scanner {
         return literal;
     }
 
-    private Double processNumericLiteral() {
+    /** Process a numeric literal.
+     *
+     * @return The parsed double.
+     */
+    Double processNumericLiteral() {
         // Keep pulling digits until you can't
         while(Character.isDigit(peekNextChar())) {
             pullNextChar();
@@ -257,7 +263,7 @@ public class Scanner {
         return Double.parseDouble(source.substring(startChar, currentChar));
     }
 
-    private void processIdentifier() {
+    void processIdentifier() {
         while(Character.isLetterOrDigit(peekNextChar())) {
             pullNextChar();
         }
