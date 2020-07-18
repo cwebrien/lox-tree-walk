@@ -126,6 +126,70 @@ public class TestScanner {
         }
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
+
+    @Test
+    public void testScanTokensReserved() {
+        List<TokenType> expectedTokens = List.of(
+                TokenType.FOR,
+                TokenType.IDENTIFIER,
+                TokenType.IF,
+                TokenType.EOF // there's always an implicit EOF
+        );
+        String ridiculousSource = "for bar if";
+        Scanner scanner = new Scanner(ridiculousSource);
+        List<Token> scannedTokens = scanner.scanTokens();
+
+        // TODO: check all contents of the token, not just the token type
+        // TODO: in interim, replace with lambda
+        List<TokenType> scannedTokenTypes = new ArrayList<TokenType>();
+        for(Token t : scannedTokens) {
+            scannedTokenTypes.add(t.getType());
+        }
+        Assert.assertEquals(expectedTokens, scannedTokenTypes);
+    }
+
+    @Test
+    public void testScanTokensForLoop() {
+        List<TokenType> expectedTokens = List.of(
+                TokenType.FOR,
+                TokenType.LEFT_PAREN,
+                TokenType.VAR,
+                TokenType.IDENTIFIER,
+                TokenType.EQUAL,
+                TokenType.NUMBER,
+                TokenType.SEMICOLON,
+                TokenType.IDENTIFIER,
+                TokenType.LESS,
+                TokenType.NUMBER,
+                TokenType.SEMICOLON,
+                TokenType.IDENTIFIER,
+                TokenType.EQUAL,
+                TokenType.IDENTIFIER,
+                TokenType.PLUS,
+                TokenType.NUMBER,
+                TokenType.RIGHT_PAREN,
+                TokenType.LEFT_BRACE,
+                TokenType.PRINT,
+                TokenType.IDENTIFIER,
+                TokenType.SEMICOLON,
+                TokenType.RIGHT_BRACE,
+                TokenType.EOF // there's always an implicit EOF
+        );
+        String ridiculousSource = "for (var a = 1; a < 10; a = a + 1) {\n" +
+                                  "\tprint a;\n" +
+                                  "}";
+        Scanner scanner = new Scanner(ridiculousSource);
+        List<Token> scannedTokens = scanner.scanTokens();
+
+        // TODO: check all contents of the token, not just the token type
+        // TODO: in interim, replace with lambda
+        List<TokenType> scannedTokenTypes = new ArrayList<TokenType>();
+        for(Token t : scannedTokens) {
+            scannedTokenTypes.add(t.getType());
+        }
+        Assert.assertEquals(expectedTokens, scannedTokenTypes);
+
+    }
 }
 
 
