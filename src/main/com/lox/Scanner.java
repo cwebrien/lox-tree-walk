@@ -131,7 +131,7 @@ public class Scanner {
                     token = buildToken(TokenType.NUMBER, processNumericLiteral());
                 }
                 else if(Character.isAlphabetic(c)) {
-                   TokenType type = processIdentifierOrReserved();
+                    TokenType type = processIdentifierOrReserved();
                     token = buildToken(type);
                 }
                 else {
@@ -192,7 +192,7 @@ public class Scanner {
         if (n <= 0) {
             return '\0';
         }
-        if (currentChar + n >= source.length() - 1) {
+        if (currentChar + n > source.length()) {
             return '\0';
         }
         return source.charAt(currentChar + n - 1);
