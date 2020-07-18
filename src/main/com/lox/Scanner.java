@@ -131,8 +131,8 @@ public class Scanner {
                     token = buildToken(TokenType.NUMBER, processNumericLiteral());
                 }
                 else if(Character.isAlphabetic(c)) {
-                    processIdentifier();
-                    token = buildToken(TokenType.IDENTIFIER);
+                   TokenType type = processIdentifierOrReserved();
+                    token = buildToken(type);
                 }
                 else {
                     Lox.error(line, "Unexpected character.");
@@ -263,9 +263,72 @@ public class Scanner {
         return Double.parseDouble(source.substring(startChar, currentChar));
     }
 
-    void processIdentifier() {
+    /**
+     * Continues to pull characters from an identifier or reserved word until we hit a non-alpha-num.
+     * Determines if this is an identifier or reserved word.
+     *
+     * @return The type of token.
+     */
+    TokenType processIdentifierOrReserved() {
         while(Character.isLetterOrDigit(peekNextChar())) {
             pullNextChar();
         }
+
+        String text = source.substring(startChar, currentChar);
+        TokenType result = null;
+        switch(text) {
+            case "and":
+                result = TokenType.AND;
+                break;
+            case "class":
+                result = TokenType.CLASS;
+                break;
+            case "else":
+                result = TokenType.ELSE;
+                break;
+            case "false":
+                result = TokenType.FALSE;
+                break;
+            case "for":
+                result = TokenType.FOR;
+                break;
+            case "nil":
+                result = TokenType.NIL;
+                break;
+            case "if":
+                result = TokenType.IF;
+                break;
+            case "or":
+                result = TokenType.OR;
+                break;
+            case "fun":
+                result = TokenType.FUN;
+                break;
+            case "print":
+                result = TokenType.PRINT;
+                break;
+            case "return":
+                result = TokenType.RETURN;
+                break;
+            case "super":
+                result = TokenType.SUPER;
+                break;
+            case "this":
+                result = TokenType.THIS;
+                break;
+            case "true":
+                result = TokenType.TRUE;
+                break;
+            case "var":
+                result = TokenType.VAR;
+                break;
+            case "while":
+                result = TokenType.WHILE;
+                break;
+            default:
+                result = TokenType.IDENTIFIER;
+        }
+
+        return result;
     }
 }
