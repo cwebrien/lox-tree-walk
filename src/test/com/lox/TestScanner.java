@@ -261,4 +261,16 @@ public class TestScanner {
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
         Assert.assertEquals(scannedTokens.get(2).getLiteral(), "string literal 123");
     }
+
+    @Test
+    public void testPeekNextChar() {
+        String source = "abcd123";
+        Scanner scanner = new Scanner(source);
+        Assert.assertEquals(scanner.peekNextChar(), 'a'); // implicitly reads next character
+        Assert.assertEquals(scanner.peekNextChar(1), 'a'); // explicitly reads next character
+        Assert.assertEquals(scanner.peekNextChar(3), 'c'); // reads 3rd next character
+        Assert.assertEquals(scanner.peekNextChar(-1), '\0'); // negative is an invalid peek
+        Assert.assertEquals(scanner.peekNextChar(7), '3'); // last possible peek
+        Assert.assertEquals(scanner.peekNextChar(8), '\0'); // peeking past end of source
+    }
 }
