@@ -262,6 +262,9 @@ public class TestScanner {
         Assert.assertEquals(scannedTokens.get(2).getLiteral(), "string literal 123");
     }
 
+    /**
+     * Tests peekNextChar().
+     */
     @Test
     public void testPeekNextChar() {
         String source = "abcd123";
@@ -272,5 +275,20 @@ public class TestScanner {
         Assert.assertEquals(scanner.peekNextChar(-1), '\0'); // negative is an invalid peek
         Assert.assertEquals(scanner.peekNextChar(7), '3'); // last possible peek
         Assert.assertEquals(scanner.peekNextChar(8), '\0'); // peeking past end of source
+    }
+
+    /**
+     * Tests matchNextChar().
+     */
+    @Test
+    public void testMatchNextChar() {
+        String source = "abcd";
+        Scanner scanner = new Scanner(source);
+        Assert.assertTrue(scanner.matchNextChar('a')); // has side effect of advancing
+        Assert.assertTrue(scanner.matchNextChar('b')); // same side effect
+        Assert.assertFalse(scanner.matchNextChar('d')); // should not advance since it's a fail
+        Assert.assertTrue(scanner.matchNextChar('c')); // advancing side effect
+        Assert.assertFalse(scanner.matchNextChar('e')); // we're at EOF
+
     }
 }
