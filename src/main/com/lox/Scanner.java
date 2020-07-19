@@ -270,7 +270,7 @@ public class Scanner {
      * @return The type of token.
      */
     TokenType processIdentifierOrReserved() {
-        while(Character.isLetterOrDigit(peekNextChar())) {
+        while(Character.isLetterOrDigit(peekNextChar() ) || peekNextChar() == '_') {
             pullNextChar();
         }
 
