@@ -6,6 +6,7 @@
 
 # IDE files
 *.iml
+.idea
 
 # Package Files #
 *.jar
@@ -20,8 +21,13 @@
 hs_err_pid*
 
 # Ignore Gradle project-specific cache directory
+gradle
 .gradle
-gradelw
+gradlew
 
 # Ignore Gradle build output directory
 build
+out
+
+# git-related
+.gitattributes
