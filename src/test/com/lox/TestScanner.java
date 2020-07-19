@@ -304,4 +304,15 @@ public class TestScanner {
         Assert.assertEquals(stringLiteralToken.getType(), TokenType.STRING);
         Assert.assertNull(stringLiteralToken.getLiteral());
     }
+
+    /**
+     * Explicitly test a bad character.
+     */
+    @Test
+    public void testBadCharacter() {
+        String source = "$";
+        Scanner scanner = new Scanner(source);
+        Assert.assertEquals(scanner.scanTokens().size(), 1); // should just have EOD
+        Assert.assertEquals(scanner.scanTokens().get(0).getType(), TokenType.EOF); // should just have EOD
+    }
 }
