@@ -106,6 +106,9 @@ public class TestScanner {
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
 
+    /**
+     * Test scanTokens() for identifiers.
+     */
     @Test
     public void testScanTokensIdentifier() {
         List<TokenType> expectedTokens = List.of(
@@ -127,6 +130,9 @@ public class TestScanner {
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
 
+    /**
+     * Test scanTokens() for reserved words and identifiers together.
+     */    
     @Test
     public void testScanTokensReserved() {
         List<TokenType> expectedTokens = List.of(
@@ -136,6 +142,43 @@ public class TestScanner {
                 TokenType.EOF // there's always an implicit EOF
         );
         String ridiculousSource = "for bar if";
+        Scanner scanner = new Scanner(ridiculousSource);
+        List<Token> scannedTokens = scanner.scanTokens();
+
+        // TODO: check all contents of the token, not just the token type
+        // TODO: in interim, replace with lambda
+        List<TokenType> scannedTokenTypes = new ArrayList<TokenType>();
+        for(Token t : scannedTokens) {
+            scannedTokenTypes.add(t.getType());
+        }
+        Assert.assertEquals(expectedTokens, scannedTokenTypes);
+    }
+
+    /**
+     * Test scanTokens() for all possible reserved tokens.
+     */    
+    @Test
+    public void testScanTokensAllReserved() {
+        List<TokenType> expectedTokens = List.of(
+                TokenType.AND,
+                TokenType.CLASS,
+                TokenType.ELSE,
+                TokenType.FALSE,
+                TokenType.FOR,
+                TokenType.NIL,
+                TokenType.IF,
+                TokenType.OR,
+                TokenType.FUN,
+                TokenType.PRINT,
+                TokenType.RETURN,
+                TokenType.SUPER,
+                TokenType.THIS,
+                TokenType.TRUE,
+                TokenType.VAR,
+                TokenType.WHILE,
+                TokenType.EOF
+        );
+        String ridiculousSource = "and class else false for nil if or fun print return super this true var while";
         Scanner scanner = new Scanner(ridiculousSource);
         List<Token> scannedTokens = scanner.scanTokens();
 
