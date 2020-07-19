@@ -34,6 +34,6 @@ public class Token {
      * @return A string representation.
      */
     public String toString() {
-        return type + " " + lexeme + " " + literal;
+        return type + " " + lexeme + " " + literal + " " + line;
     }
 }
