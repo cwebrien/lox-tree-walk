@@ -5,7 +5,7 @@ public class Token {
     private final TokenType type;
     private final String lexeme;
     private final Object literal;
-    private int line;
+    private final int line;
 
     /**
      * A token is defined by its type, underlying data and its location in the execution script or interactive session.
