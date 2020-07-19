@@ -325,9 +325,9 @@ public class TestScanner {
         Scanner scanner = new Scanner(source);
         List<Token> scannedTokens = scanner.scanTokens();
 
-        Assert.assertEquals(scannedTokens.get(0).getLiteral(), new Double(123));
-        Assert.assertEquals(scannedTokens.get(1).getLiteral(), new Double(3.14));
-        Assert.assertEquals(scannedTokens.get(2).getLiteral(), new Double(10));
+        Assert.assertEquals(scannedTokens.get(0).getLiteral(), Double.valueOf(123));
+        Assert.assertEquals(scannedTokens.get(1).getLiteral(), Double.valueOf(3.14));
+        Assert.assertEquals(scannedTokens.get(2).getLiteral(), Double.valueOf(10));
     }
 
 }
