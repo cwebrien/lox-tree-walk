@@ -282,7 +282,7 @@ public class TestScanner {
      */
     @Test
     public void testMatchNextChar() {
-        String source = "abcd";
+        String source = "abc";
         Scanner scanner = new Scanner(source);
         Assert.assertTrue(scanner.matchNextChar('a')); // has side effect of advancing
         Assert.assertTrue(scanner.matchNextChar('b')); // same side effect
