@@ -191,6 +191,9 @@ public class TestScanner {
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
 
+    /**
+     * Tests scanTokens() for a bit of lox that iterates over a print statement.
+     */
     @Test
     public void testScanTokensForLoop() {
         List<TokenType> expectedTokens = List.of(
@@ -231,17 +234,27 @@ public class TestScanner {
             scannedTokenTypes.add(t.getType());
         }
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
+    }
 
+    @Test
+    public void testStringLiteral() {
+        List<TokenType> expectedTokens = List.of(
+                TokenType.IF,
+                TokenType.IDENTIFIER,
+                TokenType.STRING,
+                TokenType.IF,
+                TokenType.EOF // there's always an implicit EOF
+        );
+        String ridiculousSource = "if some_identifier \"string literal 123\" if";
+        Scanner scanner = new Scanner(ridiculousSource);
+        List<Token> scannedTokens = scanner.scanTokens();
+
+        // TODO: check all contents of the token, not just the token type
+        // TODO: in interim, replace with lambda
+        List<TokenType> scannedTokenTypes = new ArrayList<TokenType>();
+        for(Token t : scannedTokens) {
+            scannedTokenTypes.add(t.getType());
+        }
+        Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
 }
-
-
-/*
-    // Literals.
-    IDENTIFIER,STRING,NUMBER,
-
-    // Keywords.
-    AND,CLASS,ELSE,FALSE,FUN,FOR,IF,NIL,OR,
-    PRINT,RETURN,SUPER,THIS,TRUE,VAR,WHILE,
-
-*/
