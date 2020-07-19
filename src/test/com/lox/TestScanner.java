@@ -236,8 +236,11 @@ public class TestScanner {
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
     }
 
+    /**
+     * Tests scanTokens() for string literals.
+     */
     @Test
-    public void testStringLiteral() {
+    public void testScanTokensStringLiteral() {
         List<TokenType> expectedTokens = List.of(
                 TokenType.IF,
                 TokenType.IDENTIFIER,
@@ -252,9 +255,10 @@ public class TestScanner {
         // TODO: check all contents of the token, not just the token type
         // TODO: in interim, replace with lambda
         List<TokenType> scannedTokenTypes = new ArrayList<TokenType>();
-        for(Token t : scannedTokens) {
+        for (Token t : scannedTokens) {
             scannedTokenTypes.add(t.getType());
         }
         Assert.assertEquals(expectedTokens, scannedTokenTypes);
+        Assert.assertEquals(scannedTokens.get(2).getLiteral(), "string literal 123");
     }
 }

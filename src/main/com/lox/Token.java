@@ -30,6 +30,14 @@ public class Token {
     }
 
     /**
+     * Provides the literal if the token represents a string or number.
+     * @return The literal
+     */
+    public Object getLiteral() {
+        return this.literal;
+    }
+
+    /**
      * Stringification of the token.
      * @return A string representation.
      */
