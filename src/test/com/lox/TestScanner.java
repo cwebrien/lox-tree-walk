@@ -315,4 +315,19 @@ public class TestScanner {
         Assert.assertEquals(scanner.scanTokens().size(), 1); // should just have EOD
         Assert.assertEquals(scanner.scanTokens().get(0).getType(), TokenType.EOF); // should just have EOD
     }
+
+    /**
+     * Implicitly test numeric processing.
+     */
+    @Test
+    public void testProcessNumericLiteral() {
+        String source = "123 3.14 10.";
+        Scanner scanner = new Scanner(source);
+        List<Token> scannedTokens = scanner.scanTokens();
+
+        Assert.assertEquals(scannedTokens.get(0).getLiteral(), new Double(123));
+        Assert.assertEquals(scannedTokens.get(1).getLiteral(), new Double(3.14));
+        Assert.assertEquals(scannedTokens.get(2).getLiteral(), new Double(10));
+    }
+
 }
