@@ -73,7 +73,9 @@ public class Lox {
      * @param toExec Code to execute (may be a single line or an entire script)
      */
     private static void run(String toExec) {
+        Scanner scanner = new Scanner(toExec);
 
+        System.out.println(scanner.scanTokens());
     }
 
     /**
