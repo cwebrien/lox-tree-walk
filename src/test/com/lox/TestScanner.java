@@ -291,4 +291,17 @@ public class TestScanner {
         Assert.assertFalse(scanner.matchNextChar('e')); // we're at EOF
 
     }
+
+    /**
+     * Explicitly test an unterminated string.
+     */
+    @Test
+    public void testProcessBadStringLiteral() {
+        String source = "\"foo bar is unterminated";
+        Scanner scanner = new Scanner(source);
+        List<Token> scannedTokens = scanner.scanTokens();
+        Token stringLiteralToken = scannedTokens.get(0);
+        Assert.assertEquals(stringLiteralToken.getType(), TokenType.STRING);
+        Assert.assertNull(stringLiteralToken.getLiteral());
+    }
 }
