@@ -93,7 +93,7 @@ public class TestScanner {
                 TokenType.RIGHT_PAREN,
                 TokenType.EOF // there's always an implicit EOF
         );
-        String ridiculousSource = "(/\n)//lots of stuff after comment\n()";
+        String ridiculousSource = "(/\n)//lots of stuff after comment\n()//another comment";
         Scanner scanner = new Scanner(ridiculousSource);
         List<Token> scannedTokens = scanner.scanTokens();
 
