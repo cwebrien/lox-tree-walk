@@ -55,6 +55,11 @@ task compileJavadocs(type: Javadoc) {
     source = sourceSets.main.allJava
 }
 
+task generateAst(type: Exec) {
+    workingDir 'build/classes/java/main'
+    commandLine 'java', 'com.lox.tool.AstGenerator', '../../../../src/main/com/lox'
+}
+
 test {
     finalizedBy jacocoTestReport // report is always generated after tests run
 }
