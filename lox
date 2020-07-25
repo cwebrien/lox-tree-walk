@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+java -classpath build/classes/java/main com.lox.Lox
+
