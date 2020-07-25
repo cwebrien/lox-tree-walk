@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class AstGenerator {
 
+    private static final String TAB = "   ";
 
     /**
      * Generates Java class source for abstract syntax trees into the specified output directory.
@@ -21,10 +23,10 @@ public class AstGenerator {
 
         System.out.println("Generating AST");
         String outputDir = args[0];
-        generateAstClasses(outputDir, "Expression");
+        generateAstClass(outputDir, "Expression");
     }
 
-    public static void generateAstClasses(String outputDir, String baseName) throws IOException {
+    public static void generateAstClass(String outputDir, String baseName) throws IOException {
         String path = outputDir + "/" + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
@@ -38,14 +40,43 @@ public class AstGenerator {
         writer.println();
 
         writer.println("abstract class " + baseName + " {");
+
+        Map<String, List<String>> astClassToFields = Map.ofEntries(
+                Map.entry("Binary", Arrays.asList("Expression left", "Token token", "Expression right")),
+                Map.entry("Grouping", Arrays.asList("Expression expression")),
+                Map.entry("Literal", Arrays.asList("Object value")),
+                Map.entry("Unary", Arrays.asList("Token operator", "Expression right"))
+        );
+
+        astClassToFields.forEach((type, fieldList) -> {
+            generateNestedAstSubClass(writer, baseName, type, fieldList);
+            writer.println();
+        });
+
         writer.println("}");
 
-        List<String> types = Arrays.asList("Binary", "Grouping", "Literal", "Unary");
-        for (String type : types) {
-          //  generateSubClasses(writer, baseName, type, fieldList)
-        }
-
         writer.close();
+    }
+
+    public static void generateNestedAstSubClass(PrintWriter writer, String baseName, String subclassName, List<String> fieldList) {
+
+        writer.println(TAB + "static class " + subclassName + " extends " + baseName + " {");
+
+        fieldList.forEach(field -> writer.println(TAB + TAB + "private final " + field + ";"));
+        writer.println();
+
+        String constructorArguments = String.join(", ", fieldList);
+        writer.println(TAB + TAB + subclassName + "(" + constructorArguments + ") {");
+
+        fieldList.forEach(field -> {
+            String fieldName = field.split(" ")[1];
+            writer.println(TAB + TAB + TAB + "this." + fieldName + " = " + fieldName + ";");
+        });
+
+
+        writer.println(TAB + TAB + "}");
+
+        writer.println(TAB + "}");
     }
 
 }
