@@ -27,6 +27,12 @@ public class AstGenerator {
         generateAstClass(outputDir, "Expression");
     }
 
+    /**
+     * Generates the AST parent class
+     * @param outputDir Where to write the .java file
+     * @param baseName The name for the AST parent class
+     * @throws IOException If writing fails
+     */
     public static void generateAstClass(String outputDir, String baseName) throws IOException {
         String path = outputDir + "/" + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
@@ -55,8 +61,6 @@ public class AstGenerator {
         writer.println(TAB + "abstract <R> R accept(Visitor<R> visitor);");
         writer.println();
 
-
-
         astClassToFields.forEach((type, fieldList) -> {
             generateNestedAstSubClass(writer, baseName, type, fieldList);
             writer.println();
@@ -67,6 +71,14 @@ public class AstGenerator {
         writer.close();
     }
 
+    /**
+     * The AST has a number of sub-classes which define different types of syntax nodes. This method writes a single
+     * instance of a sub-class.
+     * @param writer To pump out the source code
+     * @param baseName Name of the parent class
+     * @param subclassName Name of the sub-class to create
+     * @param fieldList Fields for this sub-class. These are of the former "DataType fieldName", e.g. "Expression left"
+     */
     public static void generateNestedAstSubClass(PrintWriter writer, String baseName, String subclassName, List<String> fieldList) {
 
         // Set up class with constructor and member field initialization
@@ -95,6 +107,11 @@ public class AstGenerator {
         writer.println(TAB + "}");
     }
 
+    /**
+     * Writes the visitor interface requisite for the interpreter to interact with the AST and its nodes.
+     * @param writer To pump out the source code
+     * @param subclassList Sub-classes in scope for visiting
+     */
     public static void generateVisitorInterface(PrintWriter writer, Set<String> subclassList) {
         writer.println(TAB + "interface Visitor<R> {");
 
