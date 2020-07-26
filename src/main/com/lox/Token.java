@@ -38,6 +38,14 @@ public class Token {
     }
 
     /**
+     * Provides the lexeme that was scanned.
+     * @return The lexeme
+     */
+    public String getLexeme() {
+        return this.lexeme;
+    }
+
+    /**
      * Stringification of the token.
      * @return A string representation.
      */
