@@ -15,17 +15,28 @@ public class AstPrinter implements Expression.Visitor<String> {
     public String visitUnary(Expression.Unary unary) {
         return parenthesize(unary.operator.getLexeme(), unary.right);
     }
-
+    
     @Override
     public String visitLiteral(Expression.Literal literal) {
         if (literal.value == null) return "nil";
         return literal.value.toString();
     }
 
-    public String print(Expression expression) {
+    /**
+     * Prints out the expression using the visitor paradigm.
+     * @param expression Expression to print
+     * @return String representation
+     */
+    public String expressionAsString(Expression expression) {
         return expression.accept(this);
     }
 
+    /**
+     * Wraps an ellipsis of expressions in parentheses."
+     * @param name Name of the expression category being wrapped
+     * @param expressions One or more expressions
+     * @return String representation
+     */
     private String parenthesize(String name, Expression... expressions) {
         StringBuilder builder = new StringBuilder();
 
@@ -39,6 +50,10 @@ public class AstPrinter implements Expression.Visitor<String> {
         return builder.toString();
     }
 
+    /**
+     * Small program to demonstrate an example of the printer.
+     * @param args Command line arguments -- not used
+     */
     public static void main(String[] args) {
         Expression expression = new Expression.Binary(
                 new Expression.Unary(
@@ -48,6 +63,6 @@ public class AstPrinter implements Expression.Visitor<String> {
                 new Expression.Grouping(
                         new Expression.Literal(2.718)));
 
-        System.out.println(new AstPrinter().print(expression));
+        System.out.println(new AstPrinter().expressionAsString(expression));
     }
 }
