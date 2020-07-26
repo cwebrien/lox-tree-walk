@@ -84,7 +84,7 @@ public class AstGenerator {
         // Set up class with constructor and member field initialization
         writer.println(TAB + "static class " + subclassName + " extends " + baseName + " {");
 
-        fieldList.forEach(field -> writer.println(TAB + TAB + "private final " + field + ";"));
+        fieldList.forEach(field -> writer.println(TAB + TAB + "final " + field + ";"));
         writer.println();
 
         String constructorArguments = String.join(", ", fieldList);
